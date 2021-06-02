@@ -16,11 +16,12 @@ RUN dotnet restore "test.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "test.csproj" -c Release -o /app/build
-
+COPY . ./
 FROM build AS publish
 RUN dotnet publish "test.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+EXPOSE 80
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "test.dll"]
